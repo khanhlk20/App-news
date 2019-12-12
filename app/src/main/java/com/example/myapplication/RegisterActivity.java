@@ -9,6 +9,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText userEmail,userPassword,userPAssword2,userName;
     private ProgressBar loadingProgress;
-    private Button regBtn;
+    private Button regBtn, cancelBtn;
 
     private FirebaseAuth mAuth;
 
@@ -55,11 +56,19 @@ public class RegisterActivity extends AppCompatActivity {
         userName = findViewById(R.id.regName);
         loadingProgress = findViewById(R.id.regProgressBar);
         regBtn = findViewById(R.id.regBtn);
+        cancelBtn = findViewById(R.id.cancelBtn);
         loadingProgress.setVisibility(View.INVISIBLE);
 
 
         mAuth = FirebaseAuth.getInstance();
-
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent loginactivity = new Intent(RegisterActivity.this,LoginActivity.class);
+                startActivity(loginactivity);
+                finish();
+            }
+        });
 
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,16 +116,20 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //if (Build.VERSION.SDK_INT >= 22) {
+                if (Build.VERSION.SDK_INT >= 22) {
 
-                  //  checkAndRequestForPermission();
+                    checkAndRequestForPermission();
 
 
-                //}
-                //else
+                }
+                else
                 {
                     openGallery();
                 }
+
+
+
+
 
             }
         });
@@ -154,6 +167,13 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+
+
+
+
+
+
 
     }
 
@@ -198,10 +218,17 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     }
                                 });
+
                     }
                 });
+
+
+
+
+
             }
         });
+
 
 
 
@@ -211,7 +238,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void updateUI() {
 
-        Intent homeActivity = new Intent(RegisterActivity.this,HomeActivity.class);
+        Intent homeActivity = new Intent(getApplicationContext(),LoginActivity.class);
         startActivity(homeActivity);
         finish();
 
@@ -275,4 +302,3 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 }
-
