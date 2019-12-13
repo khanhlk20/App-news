@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -28,13 +29,15 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private ImageView ImgUserPhoto;
     static int PReqCode = 1 ;
     static int REQUESCODE = 1 ;
-    Uri pickedImgUri ;
+    Uri pickedImgUri=null ;
 
     private EditText userEmail,userPassword,userPAssword2,userName;
     private ProgressBar loadingProgress;
@@ -118,10 +121,7 @@ public class RegisterActivity extends AppCompatActivity {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                checkAndRequestForPermission();
             }
-            else{
-                openGallery();
 
-            }
 
 
             }
@@ -129,6 +129,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     }
+
 
     private void CreateUserAccount(String email, final String name, String password) {
 
@@ -243,7 +244,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void openGallery() {
-        //TODO: open gallery intent and wait for user to pick an image !
 
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
@@ -269,8 +269,12 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
         }
-        else
-            openGallery();
+        else{
+            CropImage.activity()
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .start(RegisterActivity.this);
+
+        }
 
     }
 
@@ -279,14 +283,17 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && requestCode == REQUESCODE && data != null ) {
 
-            // the user has successfully picked an image
-            // we need to save its reference to a Uri variable
-            pickedImgUri = data.getData() ;
-            ImgUserPhoto.setImageURI(pickedImgUri);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                pickedImgUri = result.getUri();
+                ImgUserPhoto.setImageURI(pickedImgUri);
 
 
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
 
 
