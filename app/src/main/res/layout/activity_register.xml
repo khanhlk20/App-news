@@ -57,13 +57,13 @@
         android:id="@+id/regName"
         android:layout_width="265dp"
         android:layout_height="50dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="36dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Name"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regUserPhoto" />
+        app:layout_constraintTop_toBottomOf="@+id/login_photo" />
 
     <ProgressBar
         android:id="@+id/regProgressBar"
@@ -76,14 +76,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <ImageView
         android:id="@+id/regUserPhoto"
-        android:layout_width="91dp"
-        android:layout_height="88dp"
+        android:layout_width="103dp"
+        android:layout_height="103dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+        app:srcCompat="@mipmap/ic_launcher" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

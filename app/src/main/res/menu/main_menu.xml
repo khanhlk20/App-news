@@ -8,7 +8,6 @@
         app:showAsAction="always"></item>
     <item
         android:id="@+id/action_settings"
-        android:icon="@mipmap/twotone_more_vert_black_18dp"
         android:title="settings"
         app:showAsAction="never"></item>
 </menu>

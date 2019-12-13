@@ -31,7 +31,7 @@ import com.google.firebase.storage.UploadTask;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    ImageView ImgUserPhoto;
+    private ImageView ImgUserPhoto;
     static int PReqCode = 1 ;
     static int REQUESCODE = 1 ;
     Uri pickedImgUri ;
@@ -116,21 +116,10 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (Build.VERSION.SDK_INT >= 22) {
 
-                    checkAndRequestForPermission();
-
-
-                }
-                else
                 {
                     openGallery();
                 }
-
-
-
-
-
             }
         });
 
