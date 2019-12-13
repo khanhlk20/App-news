@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -59,18 +60,23 @@ public class PostActivity extends AppCompatActivity {
 
         String title_val = edtTitle.getText().toString().trim();
         String desc_val = edtDes.getText().toString().trim();
-        if (!TextUtils.isEmpty(title_val) && !TextUtils.isEmpty(desc_val) && pickedImgUri == null) {
             final StorageReference filepath = storage.child("Blog_Image").child(pickedImgUri.getLastPathSegment());
 
             filepath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    filepath.getDownloadUrl();
+                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                    filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                        }
+                    });
+
                 }
             });
 
 
-        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

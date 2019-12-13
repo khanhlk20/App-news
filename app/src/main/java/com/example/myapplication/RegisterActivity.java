@@ -115,11 +115,15 @@ public class RegisterActivity extends AppCompatActivity {
         ImgUserPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+               checkAndRequestForPermission();
+            }
+            else{
+                openGallery();
+
+            }
 
 
-                {
-                    openGallery();
-                }
             }
         });
 
@@ -178,14 +182,11 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                // image uploaded succesfully
-                // now we can get our image url
-
                 imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
 
-                        // uri contain user image url
+
 
 
                         UserProfileChangeRequest profleUpdate = new UserProfileChangeRequest.Builder()
