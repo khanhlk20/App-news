@@ -119,10 +119,29 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-               checkAndRequestForPermission();
+                if (ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                        Toast.makeText(RegisterActivity.this,"Please accept for required permission",Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    else
+                    {
+                        ActivityCompat.requestPermissions(RegisterActivity.this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                PReqCode);
+                    }
+
+                }
+                else{
+                    CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(RegisterActivity.this);
+
+                }
             }
-
-
 
             }
         });
@@ -161,14 +180,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
-
-
-
-
-
-
+        
     }
 
 
@@ -248,34 +260,6 @@ public class RegisterActivity extends AppCompatActivity {
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent,REQUESCODE);
-    }
-
-    private void checkAndRequestForPermission() {
-
-
-        if (ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                Toast.makeText(RegisterActivity.this,"Please accept for required permission",Toast.LENGTH_SHORT).show();
-
-            }
-
-            else
-            {
-                ActivityCompat.requestPermissions(RegisterActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PReqCode);
-            }
-
-        }
-        else{
-            CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .start(RegisterActivity.this);
-
-        }
-
     }
 
 
