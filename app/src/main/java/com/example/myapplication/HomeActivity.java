@@ -7,18 +7,27 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    TextView navUsername ;
+    TextView navUserMail ;
+    ImageView navUserPhot ;
+    FirebaseUser currentUser;
 
-    private Button settig,help,button;
+    private Button settig,back,button;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
 
@@ -28,7 +37,17 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         button=findViewById(R.id.button);
         settig=findViewById(R.id.setting);
-        help=findViewById((R.id.help));
+        back=findViewById((R.id.back));
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+        navUsername = findViewById(R.id.activity_main_tv_user_name);
+        navUserMail = findViewById(R.id.activity_main_mail);
+        navUserPhot = findViewById(R.id.activity_main_imv_avatar);
+        Log.i("check",currentUser.getEmail().toString());
+        navUserMail.setText(currentUser.getEmail().toString());
+        navUsername.setText(currentUser.getDisplayName());
+
         settig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,6 +70,13 @@ public class HomeActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                HomeActivity.super.finish();
+            }
+        });
 
     }
 

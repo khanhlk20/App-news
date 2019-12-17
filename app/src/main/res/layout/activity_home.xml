@@ -8,15 +8,15 @@
     tools:context=".HomeActivity">
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"><Button
+    android:layout_height="wrap_content">
+
+    <Button
         android:id="@+id/button"
         android:layout_width="119dp"
         android:layout_height="66dp"
-        android:layout_marginStart="252dp"
-        android:layout_marginTop="352dp"
         android:text="Button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="170dp"
+        tools:layout_editor_absoluteY="306dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -24,6 +24,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:layout_gravity="start">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -40,7 +41,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/navigation_header_height"
+                android:layout_height="154dp"
                 android:background="@color/colorPrimary"
                 android:gravity="bottom"
                 android:orientation="vertical"
@@ -57,34 +58,33 @@
                     android:paddingTop="@dimen/activity_vertical_margin"
                     app:srcCompat="@mipmap/ic_launcher_round" />
 
-                <TextView
-                    android:id="@+id/activity_main_tv_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="yellowcode.books@gmail.com" />
 
-            </LinearLayout>  <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/navigation_item_height"
-            android:layout_marginTop="3dp"
-            android:background="@android:color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin">
 
-            <ImageView
-                android:layout_width="@dimen/navigation_item_icon_size"
-                android:layout_height="@dimen/navigation_item_icon_size"
-                android:src="@drawable/common_google_signin_btn_text_disabled" />
+            </LinearLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:text="About" />
+                android:layout_height="@dimen/navigation_item_height"
+                android:layout_marginTop="3dp"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
 
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="@dimen/navigation_item_icon_size"
+                    android:layout_height="@dimen/navigation_item_icon_size"
+                    android:src="@drawable/common_google_signin_btn_text_disabled" />
+
+                <TextView
+                    android:id="@+id/activity_main_mail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:text="About" />
+
+            </LinearLayout>
 
             <!-- Item Help -->
 
@@ -111,6 +111,10 @@
                     android:text="Help" />
 
             </LinearLayout>
+            <Button
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
