@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -47,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
         Log.i("check",currentUser.getEmail().toString());
         navUserMail.setText(currentUser.getEmail().toString());
         navUsername.setText(currentUser.getDisplayName());
+        Glide.with(this).load(currentUser.getPhotoUrl()).into(navUserPhot);
 
         settig.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +75,9 @@ public class HomeActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
-                HomeActivity.super.finish();
+
+                Intent setup = new Intent(HomeActivity.this,SetupActivity.class);
+                startActivity(setup);
             }
         });
 
