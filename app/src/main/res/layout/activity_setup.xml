@@ -17,17 +17,18 @@
 
     <EditText
         android:id="@+id/nav_user_mail"
-        android:layout_width="215dp"
+        android:layout_width="match_parent"
         android:layout_height="53dp"
-        android:text="mail"
-        android:textColor="#000"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:enabled="false"
+        android:hint="mail"
+        android:textColor="#000" />
 
     <EditText
         android:id="@+id/nav_username"
         android:layout_width="match_parent"
         android:layout_height="63dp"
-        android:text="name"
+        android:hint="name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="#000"
         android:layout_marginTop="36dp"
@@ -37,5 +38,5 @@
         android:id="@+id/accept"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:text="Button" />
+        android:text="Xác nhận" />
 </LinearLayout>

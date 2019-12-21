@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,7 +24,7 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     TextView navUsername ;
     TextView navUserMail ;
-    ImageView navUserPhot ;
+    ImageView navUserPhot,imagenews;
     FirebaseUser currentUser;
 
     private Button settig,back,button;
@@ -42,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        imagenews = findViewById(R.id.imagenews);
         navUsername = findViewById(R.id.activity_main_tv_user_name);
         navUserMail = findViewById(R.id.activity_main_mail);
         navUserPhot = findViewById(R.id.activity_main_imv_avatar);

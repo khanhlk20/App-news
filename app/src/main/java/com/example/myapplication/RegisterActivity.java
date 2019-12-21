@@ -101,50 +101,42 @@ public class RegisterActivity extends AppCompatActivity {
                     CreateUserAccount(email,name,password);
                 }
 
-
-
-
-
-
-
-
-
             }
         });
+
 
         ImgUserPhoto = findViewById(R.id.regUserPhoto) ;
 
         ImgUserPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                if (ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    if (ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
-                        Toast.makeText(RegisterActivity.this,"Please accept for required permission",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this,"Please accept for required permission",Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        else
+                        {
+                            ActivityCompat.requestPermissions(RegisterActivity.this,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    PReqCode);
+                        }
 
                     }
+                    else{
+                        CropImage.activity()
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .start(RegisterActivity.this);
 
-                    else
-                    {
-                        ActivityCompat.requestPermissions(RegisterActivity.this,
-                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                PReqCode);
                     }
-
                 }
-                else{
-                    CropImage.activity()
-                            .setGuidelines(CropImageView.Guidelines.ON)
-                            .start(RegisterActivity.this);
-
-                }
-            }
 
             }
         });
-
 
     }
 
@@ -179,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
-        
+
     }
 
 
@@ -197,9 +189,6 @@ public class RegisterActivity extends AppCompatActivity {
                 imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-
-
-
 
                         UserProfileChangeRequest profleUpdate = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(name)
@@ -220,21 +209,11 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     }
                                 });
-
                     }
                 });
 
-
-
-
-
             }
         });
-
-
-
-
-
 
     }
 
@@ -254,12 +233,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void openGallery() {
 
-        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,REQUESCODE);
-    }
 
 
     @Override

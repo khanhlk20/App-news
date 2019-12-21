@@ -9,6 +9,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,37 +21,67 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.internal.Storage;
+
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+
+import com.theartofdev.edmodo.cropper.CropImageView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import io.grpc.Compressor;
+
+import static com.example.myapplication.RegisterActivity.PReqCode;
 
 public class PostActivity extends AppCompatActivity {
     private ImageButton imageButton;
     private static final int REQUESCODE=1;
     private Button submitbtn;
     private EditText edtTitle,edtDes;
-    Uri pickedImgUri ;
+    private StorageReference storageReference;
+    Uri pickedImgUri=null ;
     static int PReqCode = 1 ;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
+    FirebaseUser currentUser;
+
 
     private StorageReference storage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        storageReference = FirebaseStorage.getInstance().getReference();
         super.onCreate(savedInstanceState);
         storage = FirebaseStorage.getInstance().getReference();
         setContentView(R.layout.activity_post);
         imageButton = findViewById(R.id.imageButton3);
         edtDes=findViewById(R.id.edtDes);
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+
         edtTitle=findViewById(R.id.edtTitle);
+        firebaseFirestore = FirebaseFirestore.getInstance();
         submitbtn=findViewById(R.id.submitbtn);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                     if (ContextCompat.checkSelfPermission(PostActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
@@ -68,69 +99,149 @@ public class PostActivity extends AppCompatActivity {
                         }
 
                     }
-                    else
-                        openGallery();
+                    else{
+                        CropImage.activity()
+                                .setGuidelines(CropImageView.Guidelines.ON)
+                                .start(PostActivity.this);
 
-                }
-                else{
-
-                   openGallery();
-
+                    }
                 }
 
             }
         });
+
+
+
+
         submitbtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                starPosting();
-            }
-        });
-    }
+            public void onClick(View view) {
 
-    private void openGallery() {
-        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent,REQUESCODE);
+                submitbtn.setVisibility(View.INVISIBLE);
 
-    }
 
-    private void starPosting() {
+                // we need to test all input fields (Title and description ) and post image
 
-        String title_val = edtTitle.getText().toString().trim();
-        String desc_val = edtDes.getText().toString().trim();
-            final StorageReference filepath = storage.child("Blog_Image").child(pickedImgUri.getLastPathSegment());
+                if (!edtTitle.getText().toString().isEmpty()
+                        && !edtDes.getText().toString().isEmpty()
+                        && pickedImgUri != null ) {
 
-            filepath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                    filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-
+                    //everything is okey no empty or null value
+                    // TODO Create Post Object and add it to firebase database
+                    // first we need to upload post Image
+                    // access firebase storage
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("blog_images");
+                    final StorageReference imageFilePath = storageReference.child(pickedImgUri.getLastPathSegment());
+                    imageFilePath.putFile(pickedImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(Uri uri) {
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String imageDownlaodLink = uri.toString();
+                                    // create post Object
+                                    Post post = new Post(edtTitle.getText().toString(),
+                                            edtDes.getText().toString(),
+                                            imageDownlaodLink,
+                                            currentUser.getUid(),
+                                            currentUser.getPhotoUrl().toString());
+
+                                    // Add post to firebase database
+
+                                    addPost(post);
+
+
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // something goes wrong uploading picture
+
+
+
+                                    imageButton.setVisibility(View.VISIBLE);
+
+
+                                }
+                            });
+
 
                         }
                     });
 
+
+
+
+
                 }
-            });
+                else {
+                    showMessage("Please verify all input fields and choose Post Image") ;
+                    imageButton.setVisibility(View.VISIBLE);
+
+                }
+
+
+
+            }
+        });
+
+
 
 
     }
+    private void showMessage(String message) {
 
+        Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();
+
+    }
+
+    private void addPost(Post post) {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Posts").push();
+
+        // get post unique ID and upadte post key
+        String key = myRef.getKey();
+        post.setPostKey(key);
+
+
+        // add post data to firebase database
+
+        myRef.setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                showMessage("Post Added successfully");
+
+                imageButton.setVisibility(View.VISIBLE);
+                PostActivity.super.finish();
+            }
+        });
+    }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && requestCode == REQUESCODE && data != null ) {
 
-            // the user has successfully picked an image
-            // we need to save its reference to a Uri variable
-            pickedImgUri = data.getData() ;
-            imageButton.setImageURI(pickedImgUri);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                pickedImgUri = result.getUri();
+                imageButton.setImageURI(pickedImgUri);
 
 
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
         }
 
 
     }
+
+
+
+
+
+
 }
+
